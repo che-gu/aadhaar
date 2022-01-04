@@ -1,0 +1,127 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <title>Aadhaar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 18px;
+        }
+
+        body {
+            font-family: "Roboto", Helvetica, Calibri;
+        }
+
+        #content {
+            background-color: #fafafa;
+            padding: 0.2rem 0;
+            width: 100vw;
+            text-align: center;
+            position: absolute;
+            top: 17rem;
+        }
+
+        #aadhaar-label {
+            width: 90vw;
+            max-width: 500px;
+            margin: auto;
+            padding-left: 0.5rem;
+            text-align: start;
+            font-size: 0.8rem;
+            line-height: 1.5em;
+            color: #0e0e0e;
+        }
+
+        #aadhaar-input-box {
+            margin-top: 0.4rem;
+            width: 90vw;
+            max-width: 500px;
+            font-size: 1.4rem;
+            line-height: 1.3em;
+            padding: 0.5rem 0 0.5rem 0.5rem;
+            border: 1px solid #ffffff;
+            border-radius: 5px;
+            outline: none;
+            box-shadow: 0px 0px 5px 5px rgba(0,0,0,0.1);
+            color: #0c0c0c;
+        }
+
+            #aadhaar-input-box.error {
+                border-color: #ff0000;
+            }
+
+            #aadhaar-input-box.success {
+                border-color: #12ff00;
+            }
+
+        #aadhaar-sub-text {
+            margin-top: 0.7rem;
+            font-size: 0.7rem;
+            line-height: 1.3em;
+            color: #898989;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="content">
+        <div id="aadhaar-label">
+            Your Aadhaar Number or Virtual ID
+        </div>
+        <div id="aadhaar-input">
+            <input placeholder="0000 0000 0000" id="aadhaar-input-box" type="tel" maxlength="14" onpaste="return false" onkeypress="return keyPressEvent(event)" />
+        </div>
+        <div id="aadhaar-sub-text">
+            UIDAI will send an OTP to your Aadhaar linked mobile number
+        </div>
+    </div>
+    <script>
+        function keyPressEvent(event) {
+            var position = event.target.selectionStart
+            var charCode = event.which || event.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57))
+                return false;
+            if (position == 4 || position == 9) {
+                document.getElementById("aadhaar-input-box").value += " ";
+            }
+            if (charCode == 13)
+                validateAadhaar();
+            return true;
+
+        }
+        function changeLanguage(aadhaarLabelText, aadhaarSubText) {
+            document.getElementById("aadhaar-label").innerText = aadhaarLabelText;
+            document.getElementById("aadhaar-sub-text").innerText = aadhaarSubText;
+        }
+        function validateAadhaar() {
+            var inputBox = document.getElementById("aadhaar-input-box");
+            var aadhaarRegex = /[0-9]{4}\s{1}[0-9]{4}\s{1}[0-9]{4}/
+            if (inputBox.value.match(aadhaarRegex)) {
+                inputBox.classList.remove("error");
+                inputBox.classList.add("success");
+            } else {
+                if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.handler) {
+                    window.webkit.messageHandlers.handler.postMessage("aadhaarErrorOccured");
+                }
+                inputBox.classList.remove("success");
+                inputBox.classList.add("error");
+            }
+        }
+
+        function changeAadhaarErrorText(errorText) {
+            document.getElementById("aadhaar-label").innerText = errorText;
+        }
+
+
+    </script>
+</body>
+
+</html>
